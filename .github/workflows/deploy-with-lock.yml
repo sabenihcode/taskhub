@@ -3,7 +3,7 @@ name: Deploy to Firebase Hosting
 on:
   push:
     branches: [main]
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -20,8 +20,19 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Validate package.json
+        run: node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"
+
       - name: Install dependencies
         run: npm install --legacy-peer-deps
+
+      - name: Verify lucide-react installed
+        run: |
+          if [ ! -d "node_modules/lucide-react" ]; then
+            echo "❌ lucide-react missing, installing..."
+            npm install lucide-react@^0.469.0 --save
+          fi
+          echo "✅ lucide-react installed"
 
       - name: Create .env.local
         run: |
@@ -35,7 +46,7 @@ jobs:
           NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
           EOF
 
-      - name: Build Next.js (static export)
+      - name: Build Next.js
         run: npm run build
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
@@ -49,16 +60,15 @@ jobs:
       - name: Verify build output
         run: |
           if [ ! -d "out" ]; then
-            echo "❌ Build failed - 'out' directory not found"
+            echo "❌ Build failed"
             exit 1
           fi
-          echo "✅ Build successful - 'out' directory created"
-          ls -la out/
+          echo "✅ Build success"
+          ls out/
 
-      - name: Setup Firebase CLI
+      - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting --project projectlaman
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_ID: projectlaman
