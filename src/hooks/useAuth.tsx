@@ -42,7 +42,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  // ✅ Ensure client-side rendering
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -50,7 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!mounted) return;
 
-    // ✅ Check if Firebase is initialized
     if (!auth || !db) {
       console.error("Firebase not initialized");
       setLoading(false);
@@ -105,18 +103,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: string;
     password: string;
   }) => {
-    // ✅ Check Firebase availability
     if (!auth || !db) {
       return { error: "Firebase not initialized" };
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, { displayName: name });
 
       await setDoc(doc(db, "users", userCredential.user.uid), {
@@ -128,10 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updatedAt: new Date(),
       });
 
-      // Check if first user
-      const usersSnapshot = await getDocs(
-        query(collection(db, "users"), limit(2))
-      );
+      const usersSnapshot = await getDocs(query(collection(db, "users"), limit(2)));
       if (usersSnapshot.size === 1) {
         await setDoc(
           doc(db, "users", userCredential.user.uid),
@@ -175,7 +164,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // ✅ Prevent hydration mismatch
   if (!mounted) {
     return <>{children}</>;
   }
