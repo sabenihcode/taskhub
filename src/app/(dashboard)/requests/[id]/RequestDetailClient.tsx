@@ -1,12 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-export const dynamicParams = true;
-
-export function generateStaticParams() {
-  return [];
-}
-
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -17,7 +10,7 @@ import { DueDateBadge } from "@/components/DueDateBadge";
 import { AssignmentSelector } from "@/components/AssignmentSelector";
 import { TimelineFeed } from "@/components/TimelineFeed";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { formatDate, formatDateTime, timeAgo } from "@/lib/date-utils";
+import { formatDate, timeAgo } from "@/lib/date-utils";
 import { STATUSES, PRIORITIES, WAITING_FOR_OPTIONS } from "@/lib/constants";
 import { useAuth } from "@/hooks/useAuth";
 import { useMasterData } from "@/hooks/useMasterData";
@@ -36,7 +29,6 @@ import {
   Briefcase,
   User as UserIcon,
   Building2,
-  Tag,
   Activity,
   Clock,
   Hash,
@@ -45,7 +37,7 @@ import {
   Loader2,
 } from "lucide-react";
 
-export default function RequestDetailPage() {
+export default function RequestDetailClient() {
   const params = useParams();
   const router = useRouter();
   const id = String(params.id);
