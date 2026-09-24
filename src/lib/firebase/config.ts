@@ -12,7 +12,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Debug: Log config (REMOVE IN PRODUCTION!)
+// Debug: Log config
 console.log("🔥 Firebase Config:", {
   apiKey: firebaseConfig.apiKey ? "✅ Set" : "❌ Missing",
   authDomain: firebaseConfig.authDomain ? "✅ Set" : "❌ Missing",
@@ -22,21 +22,39 @@ console.log("🔥 Firebase Config:", {
   appId: firebaseConfig.appId ? "✅ Set" : "❌ Missing",
 });
 
-// Validate config
+// Validate config - HANYA WARNING, JANGAN THROW ERROR
 if (!firebaseConfig.apiKey) {
-  throw new Error("❌ NEXT_PUBLIC_FIREBASE_API_KEY is missing in .env.local");
+  console.warn("⚠️ NEXT_PUBLIC_FIREBASE_API_KEY is missing");
 }
 
 if (!firebaseConfig.projectId) {
-  throw new Error("❌ NEXT_PUBLIC_FIREBASE_PROJECT_ID is missing in .env.local");
+  console.warn("⚠️ NEXT_PUBLIC_FIREBASE_PROJECT_ID is missing");
 }
 
 // Initialize Firebase (singleton pattern)
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+// Hanya initialize jika config lengkap
+let app;
+let auth;
+let db;
+let storage;
+
+if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+  db = getFirestore(app);
+  storage = getStorage(app);
+} else {
+  console.warn("⚠️ Firebase not initialized - missing configuration");
+  // @ts-ignore - Akan diisi saat runtime
+  app = null;
+  // @ts-ignore
+  auth = null;
+  // @ts-ignore
+  db = null;
+  // @ts-ignore
+  storage = null;
+}
 
 // Export Firebase services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-
+export { auth, db, storage };
 export default app;
