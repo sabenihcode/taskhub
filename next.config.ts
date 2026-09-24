@@ -1,17 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ❌ HAPUS: output: "export",
-  
   images: {
     unoptimized: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  serverExternalPackages: ['firebase', 'firebase-admin'],
+  
+  // ✅ Add empty turbopack config to silence warning
+  turbopack: {},
+  
+  // ❌ Remove webpack config (tidak diperlukan untuk Cloudflare Workers)
+  // Turbopack akan handle bundling secara otomatis
 };
 
 export default nextConfig;
