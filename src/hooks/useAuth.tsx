@@ -9,7 +9,7 @@ import {
   updateProfile,
   User as FirebaseUser,
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, query, limit, getDocs } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/config";
 
 export interface User {
@@ -40,30 +40,41 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  // ✅ Ensure client-side rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+
+    // ✅ Check if Firebase is initialized
+    if (!auth || !db) {
+      console.error("Firebase not initialized");
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(
       auth,
       async (firebaseUser: FirebaseUser | null) => {
         if (firebaseUser) {
           try {
-            const userDocRef = doc(db, "users", firebaseUser.uid);
+            const userDocRef = doc(db!, "users", firebaseUser.uid);
             const userDoc = await getDoc(userDocRef);
             const userData = userDoc.data();
 
             setUser({
               id: firebaseUser.uid,
               email: firebaseUser.email!,
-              name:
-                firebaseUser.displayName ||
-                userData?.name ||
-                "User",
+              name: firebaseUser.displayName || userData?.name || "User",
               role: userData?.role || "user",
               createdAt: userData?.createdAt?.toDate?.(),
             });
           } catch (error) {
             console.error("Error fetching user data:", error);
-            // Still set basic user info
             setUser({
               id: firebaseUser.uid,
               email: firebaseUser.email!,
@@ -75,11 +86,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(null);
         }
         setLoading(false);
+      },
+      (error) => {
+        console.error("Auth state error:", error);
+        setLoading(false);
       }
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [mounted]);
 
   const register = async ({
     name,
@@ -90,33 +105,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: string;
     password: string;
   }) => {
+    // ✅ Check Firebase availability
+    if (!auth || !db) {
+      return { error: "Firebase not initialized" };
+    }
+
     try {
-      // ✅ Create auth user
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
 
-      // ✅ Update display name
       await updateProfile(userCredential.user, { displayName: name });
 
-      // ✅ Save additional data to Firestore
       await setDoc(doc(db, "users", userCredential.user.uid), {
         name,
         email,
-        role: "user", // First user becomes admin (check below)
+        role: "user",
         active: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
 
-      // ✅ Check if this is the first user → make admin
+      // Check if first user
       const usersSnapshot = await getDocs(
         query(collection(db, "users"), limit(2))
       );
       if (usersSnapshot.size === 1) {
-        // First user! Make admin
         await setDoc(
           doc(db, "users", userCredential.user.uid),
           { role: "admin" },
@@ -132,6 +148,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string) => {
+    if (!auth) {
+      return { error: "Firebase not initialized" };
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return { success: true };
@@ -142,6 +162,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
+    if (!auth) {
+      return { error: "Firebase not initialized" };
+    }
+
     try {
       await firebaseSignOut(auth);
       return { success: true };
@@ -150,6 +174,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { error: "Gagal logout" };
     }
   };
+
+  // ✅ Prevent hydration mismatch
+  if (!mounted) {
+    return <>{children}</>;
+  }
 
   return (
     <AuthContext.Provider value={{ user, loading, register, login, logout }}>
@@ -166,7 +195,6 @@ export function useAuth() {
   return context;
 }
 
-// Error message mapping
 function getErrorMessage(code: string): string {
   const messages: Record<string, string> = {
     "auth/email-already-in-use": "Email sudah terdaftar",
@@ -183,6 +211,3 @@ function getErrorMessage(code: string): string {
 
   return messages[code] || "Terjadi kesalahan, silakan coba lagi";
 }
-
-// Tambahan import
-import { collection, query, limit, getDocs } from "firebase/firestore";
