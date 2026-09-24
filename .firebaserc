@@ -1,0 +1,8 @@
+$firebaseConfig = @'
+{
+  "projects": {
+    "default": "projectlaman"
+  }
+}
+'@
+Set-Content -Path ".firebaserc" -Value $firebaseConfig
