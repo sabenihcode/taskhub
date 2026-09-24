@@ -1,7 +1,7 @@
-import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth"; 
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { initializeApp, getApps, FirebaseApp } from "firebase/app";
+import { getAuth, Auth } from "firebase/auth";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,49 +12,25 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Debug: Log config
-console.log("🔥 Firebase Config:", {
-  apiKey: firebaseConfig.apiKey ? "✅ Set" : "❌ Missing",
-  authDomain: firebaseConfig.authDomain ? "✅ Set" : "❌ Missing",
-  projectId: firebaseConfig.projectId ? "✅ Set" : "❌ Missing",
-  storageBucket: firebaseConfig.storageBucket ? "✅ Set" : "❌ Missing",
-  messagingSenderId: firebaseConfig.messagingSenderId ? "✅ Set" : "❌ Missing",
-  appId: firebaseConfig.appId ? "✅ Set" : "❌ Missing",
-});
+let app: FirebaseApp | undefined;
+let auth: Auth | undefined;
+let db: Firestore | undefined;
+let storage: FirebaseStorage | undefined;
 
-// Validate config - HANYA WARNING, JANGAN THROW ERROR
-if (!firebaseConfig.apiKey) {
-  console.warn("⚠️ NEXT_PUBLIC_FIREBASE_API_KEY is missing");
+// Initialize Firebase ONLY in browser environment
+if (typeof window !== 'undefined') {
+  try {
+    if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+      app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+      auth = getAuth(app);
+      db = getFirestore(app);
+      storage = getStorage(app);
+    }
+  } catch (error) {
+    console.error("Firebase initialization error:", error);
+  }
 }
 
-if (!firebaseConfig.projectId) {
-  console.warn("⚠️ NEXT_PUBLIC_FIREBASE_PROJECT_ID is missing");
-}
-
-// Initialize Firebase (singleton pattern)
-// Hanya initialize jika config lengkap
-let app;
-let auth;
-let db;
-let storage;
-
-if (firebaseConfig.apiKey && firebaseConfig.projectId) {
-  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-  auth = getAuth(app);
-  db = getFirestore(app);
-  storage = getStorage(app);
-} else {
-  console.warn("⚠️ Firebase not initialized - missing configuration");
-  // @ts-ignore - Akan diisi saat runtime
-  app = null;
-  // @ts-ignore
-  auth = null;
-  // @ts-ignore
-  db = null;
-  // @ts-ignore
-  storage = null;
-}
-
-// Export Firebase services
+// Export with safe defaults
 export { auth, db, storage };
 export default app;
