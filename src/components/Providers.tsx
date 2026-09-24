@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthProvider } from "@/hooks/useAuth";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -16,6 +16,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
         },
       })
   );
+
+  // ✅ Prevent hydration mismatch
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Return minimal content during SSR
+  if (!mounted) {
+    return <div className="min-h-screen bg-white" />;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
