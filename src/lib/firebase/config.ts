@@ -1,7 +1,7 @@
-import { initializeApp, getApps, FirebaseApp } from "firebase/app";
-import { getAuth, Auth } from "firebase/auth";
-import { getFirestore, Firestore } from "firebase/firestore";
-import { getStorage, FirebaseStorage } from "firebase/storage";
+import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
+import { getAuth, type Auth } from "firebase/auth";
+import { getFirestore, type Firestore } from "firebase/firestore";
+import { getStorage, type FirebaseStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,7 +17,7 @@ let auth: Auth | undefined;
 let db: Firestore | undefined;
 let storage: FirebaseStorage | undefined;
 
-// Initialize Firebase ONLY in browser environment
+// ONLY initialize in browser
 if (typeof window !== 'undefined') {
   try {
     if (firebaseConfig.apiKey && firebaseConfig.projectId) {
@@ -25,12 +25,12 @@ if (typeof window !== 'undefined') {
       auth = getAuth(app);
       db = getFirestore(app);
       storage = getStorage(app);
+      console.log('✅ Firebase initialized');
     }
   } catch (error) {
-    console.error("Firebase initialization error:", error);
+    console.error('❌ Firebase error:', error);
   }
 }
 
-// Export with safe defaults
 export { auth, db, storage };
 export default app;
