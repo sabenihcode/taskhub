@@ -1,3 +1,11 @@
+// ✅ Required for static export with dynamic routes
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+
+export function generateStaticParams() {
+  return [];
+}
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -25,7 +33,6 @@ import {
 import type { Request, TimelineEvent } from "@/types";
 import {
   ArrowLeft,
-  Save,
   Edit,
   Briefcase,
   User as UserIcon,
@@ -68,7 +75,7 @@ export default function RequestDetailPage() {
       return data as Request | null;
     },
     enabled: !!id,
-    refetchInterval: 30_000, // Refetch every 30s
+    refetchInterval: 30_000,
   });
 
   // Fetch timeline
@@ -228,7 +235,7 @@ export default function RequestDetailPage() {
 
           {/* Description */}
           {request.description && (
-            <p className="text-slate-600 leading-relaxed max-w-3xl">
+            <p className="text-slate-600 leading-relaxed max-w-3xl whitespace-pre-wrap">
               {request.description}
             </p>
           )}
@@ -264,16 +271,20 @@ export default function RequestDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
-                <InfoItem label="Tim" value={
-                  teams.find((t) => t.id === request.teamId)?.name
-                } />
-                <InfoItem label="Perusahaan" value={
-                  companies.find((c) => c.id === request.companyId)?.name
-                } />
+                <InfoItem
+                  label="Tim"
+                  value={teams.find((t) => t.id === request.teamId)?.name}
+                />
+                <InfoItem
+                  label="Perusahaan"
+                  value={companies.find((c) => c.id === request.companyId)?.name}
+                />
                 <InfoItem
                   label="Jenis Request"
                   value={
-                    requestTypes.data.find((t) => t.id === request.requestTypeId)?.name
+                    requestTypes.data.find(
+                      (t) => t.id === request.requestTypeId
+                    )?.name
                   }
                 />
                 <InfoItem
@@ -331,10 +342,22 @@ export default function RequestDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
-                <InfoItem label="Current Action" value={request.currentAction} multiline />
-                <InfoItem label="Next Action" value={request.nextAction} multiline />
+                <InfoItem
+                  label="Current Action"
+                  value={request.currentAction}
+                  multiline
+                />
+                <InfoItem
+                  label="Next Action"
+                  value={request.nextAction}
+                  multiline
+                />
                 <InfoItem label="Waiting For" value={request.waitingFor} />
-                <InfoItem label="Dokumen Kurang" value={request.missingDocument} multiline />
+                <InfoItem
+                  label="Dokumen Kurang"
+                  value={request.missingDocument}
+                  multiline
+                />
               </div>
             </CardContent>
           </Card>
@@ -374,7 +397,9 @@ export default function RequestDetailPage() {
                   className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   {STATUSES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </FormField>
@@ -388,7 +413,9 @@ export default function RequestDetailPage() {
                   className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   {PRIORITIES.map((p) => (
-                    <option key={p} value={p}>{p}</option>
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
                   ))}
                 </select>
               </FormField>
@@ -426,12 +453,16 @@ export default function RequestDetailPage() {
                 <select
                   disabled={!canEdit || saving}
                   value={request.companyId ?? ""}
-                  onChange={(e) => updateField("companyId", e.target.value || null)}
+                  onChange={(e) =>
+                    updateField("companyId", e.target.value || null)
+                  }
                   className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <option value="">— Pilih —</option>
                   {filteredCompanies.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
                   ))}
                 </select>
               </FormField>
@@ -441,12 +472,16 @@ export default function RequestDetailPage() {
                 <select
                   disabled={!canEdit || saving}
                   value={request.requestTypeId ?? ""}
-                  onChange={(e) => updateField("requestTypeId", e.target.value || null)}
+                  onChange={(e) =>
+                    updateField("requestTypeId", e.target.value || null)
+                  }
                   className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <option value="">— Pilih —</option>
                   {requestTypes.data.map((t) => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
                   ))}
                 </select>
               </FormField>
@@ -456,12 +491,16 @@ export default function RequestDetailPage() {
                 <select
                   disabled={!canEdit || saving}
                   value={request.waitingFor ?? ""}
-                  onChange={(e) => updateField("waitingFor", e.target.value || null)}
+                  onChange={(e) =>
+                    updateField("waitingFor", e.target.value || null)
+                  }
                   className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <option value="">—</option>
                   {WAITING_FOR_OPTIONS.map((w) => (
-                    <option key={w} value={w}>{w}</option>
+                    <option key={w} value={w}>
+                      {w}
+                    </option>
                   ))}
                 </select>
               </FormField>
@@ -474,7 +513,7 @@ export default function RequestDetailPage() {
 }
 
 // ============================================
-// HELPER COMPONENTS
+// HELPER COMPONENTS (Top-level)
 // ============================================
 
 interface InfoItemProps {
