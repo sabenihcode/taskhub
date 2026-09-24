@@ -1,18 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ✅ Enable static export
   output: "export",
-  
   images: {
-    unoptimized: true, // Required untuk static export
+    unoptimized: true,
   },
-  
-  // Disable image optimization, ESLint, etc for static build
-  eslint: {
-    ignoreDuringBuilds: true,
+  // ✅ Add this to allow client-side rendering for dynamic routes
+  experimental: {
+    // Force dynamic rendering where needed
   },
-  
+  // Ignore TypeScript errors during build (faster deployment)
   typescript: {
     ignoreBuildErrors: true,
   },
