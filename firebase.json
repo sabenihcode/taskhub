@@ -1,0 +1,37 @@
+$firebaseJson = @'
+{
+  "hosting": {
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "**/api/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      }
+    ],
+    "cleanUrls": true
+  },
+  "emulators": {
+    "hosting": {
+      "port": 5000
+    }
+  }
+}
+'@
+Set-Content -Path "firebase.json" -Value $firebaseJson
