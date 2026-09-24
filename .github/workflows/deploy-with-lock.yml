@@ -1,40 +1,32 @@
-name: Deploy to Cloudflare Pages
+name: Auto Deploy
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # ✅ Generate lock file kalau belum ada
-      - name: Generate package-lock.json if missing
-        run: |
-          if [ ! -f package-lock.json ]; then
-            echo "Generating package-lock.json..."
-            npm install --package-lock-only
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add package-lock.json
-            git commit -m "chore: auto-generate package-lock.json"
-            git push
-          else
-            echo "package-lock.json exists"
-          fi
-
+      # ✅ Smart install - handle missing lock file
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "✅ Lock file found, using npm ci"
+            npm ci --legacy-peer-deps
+          else
+            echo "⚠️ No lock file, using npm install"
+            npm install --legacy-peer-deps
+          fi
 
       - name: Build
         run: npm run build
@@ -49,7 +41,7 @@ jobs:
           FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
           FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
 
-      - name: Publish to Cloudflare Pages
+      - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
