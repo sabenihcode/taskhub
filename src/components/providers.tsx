@@ -17,14 +17,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
       })
   );
 
-  // ✅ Prevent hydration mismatch
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Return minimal content during SSR
+  // Prevent hydration mismatch
   if (!mounted) {
     return <div className="min-h-screen bg-white" />;
   }
