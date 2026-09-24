@@ -1,12 +1,11 @@
-// ✅ Server Component (no "use client")
-// ✅ generateStaticParams works here
+// ✅ Required for static export with dynamic routes
+// ⚠️ Removed dynamicParams (not compatible with output: "export")
 
 export function generateStaticParams() {
   return [];
 }
 
 export const dynamic = "force-dynamic";
-export const dynamicParams = true;
 
 import RequestDetailClient from "./RequestDetailClient";
 
