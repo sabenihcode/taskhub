@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -18,21 +18,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Validate package.json
         run: node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"
 
+      # ✅ GANTI npm ci → npm install --legacy-peer-deps
       - name: Install dependencies
         run: npm install --legacy-peer-deps
-
-      - name: Verify lucide-react installed
-        run: |
-          if [ ! -d "node_modules/lucide-react" ]; then
-            echo "❌ lucide-react missing, installing..."
-            npm install lucide-react@^0.469.0 --save
-          fi
-          echo "✅ lucide-react installed"
 
       - name: Create .env.local
         run: |
@@ -59,16 +51,17 @@ jobs:
 
       - name: Verify build output
         run: |
-          if [ ! -d "out" ]; then
+          if [ ! -d ".next" ]; then
             echo "❌ Build failed"
             exit 1
           fi
           echo "✅ Build success"
-          ls out/
 
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
         with:
-          args: deploy --only hosting --project projectlaman
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: taskhub
+          directory: .next
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
