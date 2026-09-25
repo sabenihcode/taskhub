@@ -15,7 +15,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TaskHub - Task Management System",
-  description: "Manage your tasks efficiently",
+  description: "Manage your tasks efficiently with TaskHub",
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
