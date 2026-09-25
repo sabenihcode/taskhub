@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function HomePage() {
@@ -11,114 +12,155 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-teal-500 via-blue-500 to-purple-600 animate-gradient-xy">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=80')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
-      </div>
-
-      {/* Animated Shapes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 flex items-center justify-center p-4">
+      {/* Phone Frame */}
+      <div className="relative w-full max-w-sm">
+        {/* Phone Shadow with Teal Glow */}
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-300 to-cyan-400 rounded-[3rem] blur-3xl opacity-20 transform scale-105"></div>
+        
+        {/* Phone Container */}
         <div 
-          className={`w-full max-w-2xl backdrop-blur-lg bg-white/10 rounded-2xl shadow-2xl border border-white/20 p-8 md:p-12 transition-all duration-1000 ${
-            mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          className={`relative bg-white rounded-[3rem] shadow-2xl border-8 border-slate-100 overflow-hidden transition-all duration-1000 ${
+            mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
           }`}
+          style={{ aspectRatio: '9/19.5' }}
         >
-          {/* Logo/Icon Animation */}
-          <div className="flex justify-center mb-8">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-blue-500 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300 opacity-75"></div>
-              <div className="relative bg-white rounded-full p-6 transform group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-16 h-16 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+          {/* Status Bar */}
+          <div className="absolute top-0 left-0 right-0 h-8 flex items-center justify-between px-8 text-xs text-slate-600 z-10">
+            <span className="font-medium">9:41</span>
+            <div className="flex gap-1 items-center">
+              <svg className="w-4 h-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <svg className="w-4 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+              </svg>
+              <div className="w-5 h-3 border-2 border-slate-600 rounded-sm relative">
+                <div className="absolute inset-0.5 bg-slate-600 rounded-[1px]"></div>
               </div>
             </div>
           </div>
 
-          {/* Title with Gradient */}
-          <div className="text-center mb-8">
-            <h1 className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-white via-teal-100 to-blue-100 bg-clip-text text-transparent animate-gradient-x">
-              TaskHub
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 font-light">
-              Task Management System
-            </p>
-            <div className="mt-4 h-1 w-32 mx-auto bg-gradient-to-r from-teal-400 to-blue-500 rounded-full"></div>
-          </div>
-
-          {/* Description */}
-          <p className="text-center text-white/80 mb-8 text-lg">
-            Manage your immigration requests and tasks efficiently with our modern platform
-          </p>
-
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Link 
-              href="/login"
-              className="group relative px-8 py-4 bg-white text-teal-600 rounded-xl font-semibold text-lg overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl"
-            >
-              <span className="relative z-10">Login</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <span className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                Login →
-              </span>
-            </Link>
-            
-            <Link 
-              href="/register"
-              className="group relative px-8 py-4 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-xl font-semibold text-lg overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl"
-            >
-              <span className="relative z-10">Register</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </Link>
-          </div>
-
-          {/* Features */}
-          <div className="grid grid-cols-3 gap-4 text-center text-white/70 text-sm">
-            <div className="group cursor-pointer">
-              <div className="mb-2 transform group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">📋</span>
-              </div>
-              <p>Track Requests</p>
+          {/* Content Container */}
+          <div className="flex flex-col items-center justify-between h-full px-8 pt-16 pb-12">
+            {/* Top Text */}
+            <div className="text-center space-y-1 mt-8 animate-fade-in">
+              <p className="text-sm font-medium text-teal-700 tracking-wider uppercase">
+                Immigration Made Simple.
+              </p>
+              <p className="text-sm font-medium text-teal-600 tracking-wider uppercase">
+                Track Every Step.
+              </p>
             </div>
-            <div className="group cursor-pointer">
-              <div className="mb-2 transform group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">📄</span>
+
+            {/* Logo/Icon Area */}
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center space-y-6 animate-slide-up">
+                {/* Logo Container */}
+                <div className="relative w-48 h-48 mx-auto group">
+                  {/* Glow Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
+                  
+                  {/* Icon/Logo Placeholder */}
+                  <div className="relative w-full h-full flex flex-col items-center justify-center">
+                    <div className="relative animate-logo-bounce">
+                      {/* Document Stack - Immigration Theme */}
+                      <div className="flex gap-1.5 mb-3 justify-center">
+                        <div className="w-7 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg shadow-lg transform -rotate-6 flex items-center justify-center">
+                          <div className="space-y-1">
+                            <div className="w-4 h-0.5 bg-white/70 rounded"></div>
+                            <div className="w-4 h-0.5 bg-white/70 rounded"></div>
+                            <div className="w-3 h-0.5 bg-white/70 rounded"></div>
+                          </div>
+                        </div>
+                        <div className="w-7 h-12 bg-gradient-to-br from-teal-600 to-teal-700 rounded-lg shadow-lg flex items-center justify-center">
+                          <div className="space-y-1">
+                            <div className="w-4 h-0.5 bg-white/90 rounded"></div>
+                            <div className="w-4 h-0.5 bg-white/90 rounded"></div>
+                            <div className="w-4 h-0.5 bg-white/90 rounded"></div>
+                            <div className="w-3 h-0.5 bg-white/70 rounded"></div>
+                          </div>
+                        </div>
+                        <div className="w-7 h-14 bg-gradient-to-br from-teal-700 to-cyan-700 rounded-lg shadow-lg transform rotate-6 flex items-center justify-center">
+                          <div className="space-y-1">
+                            <div className="w-4 h-0.5 bg-white/90 rounded"></div>
+                            <div className="w-4 h-0.5 bg-white/90 rounded"></div>
+                            <div className="w-4 h-0.5 bg-white/90 rounded"></div>
+                            <div className="w-4 h-0.5 bg-white/70 rounded"></div>
+                            <div className="w-3 h-0.5 bg-white/50 rounded"></div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Base Platform */}
+                      <div className="w-36 h-24 bg-gradient-to-br from-teal-600 to-cyan-600 rounded-2xl relative shadow-xl transform group-hover:scale-105 transition-transform duration-300">
+                        {/* Checkmark Circle */}
+                        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center shadow-lg ring-4 ring-white">
+                          <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        
+                        {/* Decorative Elements */}
+                        <div className="absolute top-3 left-3 w-4 h-4 bg-white/20 rounded backdrop-blur-sm"></div>
+                        <div className="absolute top-3 right-3 w-3 h-3 bg-white/20 rounded-full backdrop-blur-sm"></div>
+                        <div className="absolute bottom-3 left-1/4 w-2 h-2 bg-white/30 rounded-full"></div>
+                        <div className="absolute bottom-3 right-1/4 w-2 h-2 bg-white/30 rounded-full"></div>
+                      </div>
+                    </div>
+                    
+                    {/* 
+                      ✅ UNCOMMENT SETELAH LOGO READY:
+                      <Image 
+                        src="/logo.png" 
+                        alt="TaskHub Logo" 
+                        width={192}
+                        height={192}
+                        className="object-contain animate-logo-bounce"
+                        priority
+                      />
+                    */}
+                  </div>
+                </div>
+
+                {/* Brand Name */}
+                <div className="space-y-2">
+                  <h1 className="text-6xl font-bold bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 bg-clip-text text-transparent">
+                    TaskHub
+                  </h1>
+                  <p className="text-sm text-teal-600/80 tracking-[0.2em] uppercase font-semibold">
+                    Immigration System
+                  </p>
+                </div>
               </div>
-              <p>Manage Docs</p>
             </div>
-            <div className="group cursor-pointer">
-              <div className="mb-2 transform group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">👥</span>
+
+            {/* Bottom Buttons */}
+            <div className="w-full space-y-4 animate-slide-up animation-delay-200">
+              {/* Get Started Button - Teal Brand Color */}
+              <Link
+                href="/register"
+                className="block w-full py-4 bg-gradient-to-r from-teal-600 to-teal-700 text-white text-center rounded-2xl font-bold text-lg shadow-lg shadow-teal-500/30 hover:shadow-xl hover:shadow-teal-500/40 transform hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 active:scale-95"
+              >
+                GET STARTED
+              </Link>
+
+              {/* Login Link */}
+              <Link
+                href="/login"
+                className="block text-center text-sm text-teal-700 font-semibold tracking-wide hover:text-teal-800 transition-colors relative group"
+              >
+                I ALREADY HAVE AN ACCOUNT
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-teal-600 group-hover:w-full transition-all duration-300"></span>
+              </Link>
+
+              {/* Bottom Indicator */}
+              <div className="flex justify-center pt-2">
+                <div className="w-32 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent rounded-full"></div>
               </div>
-              <p>Collaborate</p>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-white rounded-full opacity-20 animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${5 + Math.random() * 10}s`,
-            }}
-          />
-        ))}
       </div>
     </div>
   );
