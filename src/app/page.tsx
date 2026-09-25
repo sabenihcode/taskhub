@@ -50,17 +50,17 @@ export default function HomePage() {
               </div>
             </div>
             
-            {/* 
+            {/
               ✅ UNCOMMENT SETELAH LOGO READY:
               <Image 
-                src="/logo.png" 
+                src="public/logo.png" 
                 alt="TaskHub Logo" 
                 width={192}
                 height={192}
                 className="object-contain"
                 priority
               />
-            */}
+            /}
           </div>
         </div>
 
