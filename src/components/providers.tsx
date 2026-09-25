@@ -2,21 +2,10 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { AuthProvider } from "@/hooks/useAuth"; // ← IMPORT INI HARUS ADA
+import { AuthProvider } from "@/hooks/useAuth";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 5 * 1000,
-            refetchOnWindowFocus: false,
-          },
-        },
-      })
-  );
-
+  const [queryClient] = useState(() => new QueryClient());
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -29,9 +18,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>        {/* ← INI HARUS ADA */}
+      <AuthProvider>
         {children}
-      </AuthProvider>       {/* ← INI HARUS ADA */}
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
