@@ -18,13 +18,12 @@ export default function RequestListPage() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const { data, isLoading, error } = useRequests(filters);
 
-  // Count active filters
   const activeFiltersCount = Object.values(filters).filter(
     (v) => v !== undefined && v !== "" && v !== "All"
   ).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-12">
       {/* HEADER */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -49,7 +48,7 @@ export default function RequestListPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Mobile filter toggle */}
+          {/* Mobile filter toggle - Tetap dipertahankan untuk layar kecil */}
           <Button
             variant="outline"
             onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
@@ -64,7 +63,7 @@ export default function RequestListPage() {
             )}
           </Button>
 
-          <Button onClick={() => setOpen(true)} className="rounded-xl">
+          <Button onClick={() => setOpen(true)} className="rounded-xl bg-teal-600 hover:bg-teal-700">
             <Plus className="mr-2 h-4 w-4" />
             <span className="hidden sm:inline">Request Baru</span>
             <span className="sm:hidden">Baru</span>
@@ -72,140 +71,110 @@ export default function RequestListPage() {
         </div>
       </div>
 
-      {/* CONTENT GRID */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr]">
-        {/* Sidebar Filters - Desktop */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-6 space-y-4">
-            <RequestFilters filters={filters} onChange={setFilters} />
+      {/* FILTER SECTION */}
+      <div className="space-y-4">
+        {/* Desktop Filter - Sekarang Horizontal & Full Width */}
+        <div className="hidden lg:block">
+          <RequestFilters filters={filters} onChange={setFilters} />
+        </div>
 
-            {activeFiltersCount > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setFilters({})}
-                className="w-full rounded-xl"
-              >
-                <X className="mr-2 h-3.5 w-3.5" />
-                Reset {activeFiltersCount} Filter
-              </Button>
+        {/* Active Filter Chips - Diletakkan tepat di bawah toolbar filter */}
+        {activeFiltersCount > 0 && (
+          <div className="flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-top-1">
+            <span className="text-xs font-medium text-slate-500">
+              Filter aktif:
+            </span>
+            {filters.search && (
+              <FilterChip
+                label={`"${filters.search}"`}
+                onRemove={() => setFilters({ ...filters, search: undefined })}
+              />
             )}
-          </div>
-        </aside>
-
-        {/* Mobile Filters Drawer */}
-        {mobileFiltersOpen && (
-          <div
-            className="lg:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm"
-            onClick={() => setMobileFiltersOpen(false)}
-          >
-            <div
-              className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-white shadow-2xl p-6 overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
+            {filters.status && filters.status !== "All" && (
+              <FilterChip
+                label={filters.status}
+                onRemove={() => setFilters({ ...filters, status: "All" })}
+              />
+            )}
+            {filters.priority && filters.priority !== "All" && (
+              <FilterChip
+                label={filters.priority}
+                onRemove={() => setFilters({ ...filters, priority: "All" })}
+              />
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFilters({})}
+              className="h-7 px-2 text-xs text-slate-500 hover:text-red-500"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">Filter</h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMobileFiltersOpen(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              <RequestFilters filters={filters} onChange={setFilters} />
-            </div>
+              <X className="mr-1 h-3 w-3" />
+              Bersihkan semua
+            </Button>
           </div>
         )}
+      </div>
 
-        {/* Main Content */}
-        <div className="min-w-0">
-          {/* Active Filter Chips */}
-          {activeFiltersCount > 0 && (
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              <span className="text-xs font-medium text-slate-500">
-                Filter aktif:
-              </span>
-              {filters.search && (
-                <FilterChip
-                  label={`"${filters.search}"`}
-                  onRemove={() =>
-                    setFilters({ ...filters, search: undefined })
-                  }
-                />
-              )}
-              {filters.status && filters.status !== "All" && (
-                <FilterChip
-                  label={filters.status}
-                  onRemove={() =>
-                    setFilters({ ...filters, status: "All" })
-                  }
-                />
-              )}
-              {filters.priority && filters.priority !== "All" && (
-                <FilterChip
-                  label={filters.priority}
-                  onRemove={() =>
-                    setFilters({ ...filters, priority: "All" })
-                  }
-                />
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setFilters({})}
-                className="h-7 text-xs text-slate-500"
-              >
-                Clear all
+      {/* MAIN CONTENT - No more grid columns, just full width */}
+      <div className="min-w-0">
+        {isLoading ? (
+          <div className="flex h-96 items-center justify-center rounded-2xl border border-slate-200 bg-white">
+            <LoadingSpinner size="lg" />
+          </div>
+        ) : error ? (
+          <EmptyState
+            title="Terjadi kesalahan"
+            description="Gagal memuat data. Coba refresh halaman."
+          />
+        ) : (data?.length || 0) === 0 ? (
+          <EmptyState
+            title={activeFiltersCount > 0 ? "Tidak ada hasil" : "Belum ada request"}
+            description={
+              activeFiltersCount > 0
+                ? "Coba ubah atau hapus filter yang aktif"
+                : "Buat request pertama Anda untuk memulai"
+            }
+            action={
+              activeFiltersCount > 0 ? (
+                <Button
+                  variant="outline"
+                  onClick={() => setFilters({})}
+                  className="rounded-xl"
+                >
+                  Reset Filter
+                </Button>
+              ) : (
+                <Button onClick={() => setOpen(true)} className="rounded-xl">
+                  <Plus className="mr-2 h-4 w-4" /> Buat Request
+                </Button>
+              )
+            }
+          />
+        ) : (
+          <RequestTable requests={data || []} />
+        )}
+      </div>
+
+      {/* MOBILE FILTERS DRAWER - Tetap digunakan karena horizontal filter terlalu lebar untuk HP */}
+      {mobileFiltersOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm"
+          onClick={() => setMobileFiltersOpen(false)}
+        >
+          <div
+            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-white shadow-2xl p-6 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-semibold text-lg">Filter Request</h3>
+              <Button variant="ghost" size="icon" onClick={() => setMobileFiltersOpen(false)}>
+                <X className="h-4 w-4" />
               </Button>
             </div>
-          )}
-
-          {/* Table or Loading or Empty */}
-          {isLoading ? (
-            <div className="flex h-96 items-center justify-center rounded-2xl border border-slate-200 bg-white">
-              <LoadingSpinner size="lg" />
-            </div>
-          ) : error ? (
-            <EmptyState
-              title="Terjadi kesalahan"
-              description="Gagal memuat data. Coba refresh halaman."
-            />
-          ) : (data?.length || 0) === 0 ? (
-            <EmptyState
-              title={
-                activeFiltersCount > 0 ? "Tidak ada hasil" : "Belum ada request"
-              }
-              description={
-                activeFiltersCount > 0
-                  ? "Coba ubah atau hapus filter yang aktif"
-                  : "Buat request pertama Anda untuk memulai"
-              }
-              action={
-                activeFiltersCount > 0 ? (
-                  <Button
-                    variant="outline"
-                    onClick={() => setFilters({})}
-                    className="rounded-xl"
-                  >
-                    Reset Filter
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => setOpen(true)}
-                    className="rounded-xl"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Buat Request
-                  </Button>
-                )
-              }
-            />
-          ) : (
-            <RequestTable requests={data || []} />
-          )}
+            <RequestFilters filters={filters} onChange={setFilters} />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* CREATE REQUEST DIALOG */}
       <Dialog open={open} onOpenChange={setOpen}>
@@ -214,11 +183,7 @@ export default function RequestListPage() {
         </DialogHeader>
         <RequestForm onSuccess={() => setOpen(false)} />
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-            className="rounded-xl"
-          >
+          <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl">
             Batal
           </Button>
         </DialogFooter>
@@ -227,7 +192,6 @@ export default function RequestListPage() {
   );
 }
 
-// Filter Chip Component
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700 border border-teal-200">
@@ -235,7 +199,6 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
       <button
         onClick={onRemove}
         className="flex h-4 w-4 items-center justify-center rounded-full hover:bg-teal-100 transition-colors"
-        aria-label={`Remove filter ${label}`}
       >
         <X className="h-3 w-3" />
       </button>
