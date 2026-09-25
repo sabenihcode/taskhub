@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,8 +41,6 @@ export default function LoginPage() {
       if (result.error) {
         setError(result.error);
       } else {
-        // ✅ useAuth hook will auto-update user state
-        // Redirect happens via useEffect
         router.replace("/dashboard");
       }
     } catch (err: any) {
@@ -62,7 +61,7 @@ export default function LoginPage() {
 
   // If already logged in, don't show login form
   if (user) {
-    return null; // Will be redirected by useEffect
+    return null;
   }
 
   return (
@@ -76,14 +75,21 @@ export default function LoginPage() {
       <div className="relative w-full max-w-md">
         {/* Logo Header */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 shadow-lg shadow-teal-600/30">
-            <span className="text-2xl font-bold text-white">RH</span>
+          <div className="mx-auto mb-4 flex items-center justify-center">
+            <Image 
+              src="/logo.png" 
+              alt="TaskHub Logo" 
+              width={80}
+              height={80}
+              className="object-contain drop-shadow-xl"
+              priority
+            />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
             Selamat Datang Kembali
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            Masuk ke akun Anda untuk melanjutkan
+            Masuk ke akun TaskHub Anda
           </p>
         </div>
 
@@ -204,9 +210,9 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="mt-6 text-center text-xs text-slate-400">
-          © 2024 RequestHub. All rights reserved.
+          © 2026 All rights reserved.
         </p>
       </div>
     </div>
   );
-}
+  }
