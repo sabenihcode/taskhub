@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -91,20 +92,14 @@ export default function RegisterPage() {
       if (result.error) {
         setError(result.error);
       } else {
-        // ✅ useAuth will update user state
-        // Wait a bit for Firestore to save user data, then check role
+        // Wait for Firestore to save user data
         setTimeout(async () => {
           try {
-            const userDoc = await getDoc(doc(db, "users", result.uid!));
+            const userDoc = await getDoc(doc(db!, "users", result.uid!));
             const userData = userDoc.data();
             const userRole = userData?.role || "user";
 
-            // Redirect based on role
-            if (userRole === "admin") {
-              router.replace("/dashboard");
-            } else {
-              router.replace("/dashboard");
-            }
+            router.replace("/dashboard");
           } catch (err) {
             router.replace("/dashboard");
           }
@@ -142,8 +137,15 @@ export default function RegisterPage() {
       <div className="relative w-full max-w-md">
         {/* Logo Header */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 shadow-lg shadow-teal-600/30">
-            <span className="text-2xl font-bold text-white">RH</span>
+          <div className="mx-auto mb-4 flex items-center justify-center">
+            <Image 
+              src="/logo.png" 
+              alt="TaskHub Logo" 
+              width={80}
+              height={80}
+              className="object-contain drop-shadow-xl"
+              priority
+            />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
             Buat Akun Baru
@@ -387,7 +389,7 @@ export default function RegisterPage() {
 
         {/* Footer */}
         <p className="mt-6 text-center text-xs text-slate-400">
-          © 2024 RequestHub. All rights reserved.
+          © 2026 All rights reserved.
         </p>
       </div>
     </div>
