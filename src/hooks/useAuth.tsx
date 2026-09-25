@@ -47,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Pastikan hanya berjalan di client side
     if (!mounted) return;
 
     if (!auth || !db) {
@@ -60,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (firebaseUser: FirebaseUser | null) => {
         if (firebaseUser) {
           try {
-            const userDocRef = doc(db!, "users", firebaseUser.uid);
+            const userDocRef = doc(db, "users", firebaseUser.uid);
             const userDoc = await getDoc(userDocRef);
             const userData = userDoc.data();
 
@@ -103,9 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: string;
     password: string;
   }) => {
-    if (!auth || !db) {
-      return { error: "Firebase not initialized" };
-    }
+    if (!auth || !db) return { error: "Firebase not initialized" };
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -137,10 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string) => {
-    if (!auth) {
-      return { error: "Firebase not initialized" };
-    }
-
+    if (!auth) return { error: "Firebase not initialized" };
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return { success: true };
@@ -151,10 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    if (!auth) {
-      return { error: "Firebase not initialized" };
-    }
-
+    if (!auth) return { error: "Firebase not initialized" };
     try {
       await firebaseSignOut(auth);
       return { success: true };
@@ -164,10 +157,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
+  // FIX: JANGAN mengembalikan children tanpa Provider.
+  // Kita biarkan Provider membungkus children sejak render pertama.
   return (
     <AuthContext.Provider value={{ user, loading, register, login, logout }}>
       {children}
@@ -196,6 +187,5 @@ function getErrorMessage(code: string): string {
     "auth/operation-not-allowed": "Operasi tidak diizinkan",
     "auth/user-disabled": "Akun dinonaktifkan",
   };
-
   return messages[code] || "Terjadi kesalahan, silakan coba lagi";
 }
