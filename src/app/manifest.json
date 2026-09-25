@@ -1,11 +1,11 @@
 {
-  "name": "RequestHub - Task Admin",
-  "short_name": "RequestHub",
-  "description": "Manage requests efficiently",
-  "start_url": "/dashboard",
+  "name": "TaskHub - Task Management System",
+  "short_name": "TaskHub",
+  "description": "Manage your tasks efficiently with TaskHub",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0d9488",
+  "theme_color": "#0ea5e9",
   "icons": [
     {
       "src": "/icon.png",
@@ -14,7 +14,7 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/icon.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
