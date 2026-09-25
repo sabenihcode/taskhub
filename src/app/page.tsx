@@ -50,7 +50,7 @@ export default function HomePage() {
 
         {/* Tagline - Lebar max-w dikurangi agar teks tidak terlalu melebar */}
         <p className="text-sm sm:text-base text-slate-500 max-w-sm mx-auto px-4 leading-relaxed">
-          Track requests, manage documents, and collaborate seamlessly in one centralized platform.
+          Track requests and Manage documents.
         </p>
 
         {/* Buttons - Padding dan ukuran font diperhalus */}
