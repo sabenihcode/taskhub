@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { AuthProvider } from "@/hooks/useAuth";
+import { AuthProvider } from "@/hooks/useAuth"; // ← IMPORT INI HARUS ADA
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -23,16 +23,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
-  // Prevent hydration mismatch
   if (!mounted) {
     return <div className="min-h-screen bg-white" />;
   }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
+      <AuthProvider>        {/* ← INI HARUS ADA */}
         {children}
-      </AuthProvider>
+      </AuthProvider>       {/* ← INI HARUS ADA */}
     </QueryClientProvider>
   );
 }
