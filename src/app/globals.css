@@ -917,3 +917,55 @@
     @apply bg-slate-50 text-slate-700 border border-slate-200;
   }
 }
+
+/* ==============================================
+   13. HOMEPAGE ANIMATIONS (MINIMALIST STYLE)
+   ============================================== */
+@layer utilities {
+  /* Phone frame animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.8s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.8s ease-out forwards;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  /* Logo bounce animation */
+  @keyframes logo-bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .animate-logo-bounce {
+    animation: logo-bounce 2s ease-in-out infinite;
+  }
+}
