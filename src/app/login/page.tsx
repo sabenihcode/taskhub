@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { BackgroundIllustration } from "@/components/BackgroundIllustration";
+import { AuthLayout } from "@/components/auth/AuthLayout";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
@@ -54,152 +54,124 @@ export default function LoginPage() {
   if (user) return null;
 
   return (
-    <>
-      {/* Background full viewport */}
-      <BackgroundIllustration />
+    <AuthLayout>
+      {/* Logo kecil di atas card */}
+      <div className="mb-4 flex justify-center">
+        <Image
+          src="/logo.png"
+          alt="TaskHub Logo"
+          width={56}
+          height={56}
+          className="object-contain drop-shadow-2xl"
+          priority
+        />
+      </div>
 
-      {/* Form floated di sisi kanan (desktop) atau center (mobile) */}
-        <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
-          {/* Header dengan logo kecil */}
-          <div className="mb-6 text-center">
-            <div className="mx-auto mb-3 inline-flex items-center justify-center">
-              <Image
-                src="/logo.png"
-                alt="TaskHub Logo"
-                width={44}
-                height={44}
-                className="object-contain"
-                priority
-              />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-              Selamat Datang Kembali
-            </h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Masuk ke akun TaskHub Anda
-            </p>
-          </div>
-
-          {/* Card glass effect */}
-          <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
-            {/* Header */}
-            <div className="mb-6 text-center">
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                Selamat Datang Kembali
-              </h1>
-              <p className="mt-1 text-sm text-slate-500">
-                Masuk ke akun TaskHub Anda
-              </p>
-            </div>
-
-            {/* Error Alert */}
-            {error && (
-              <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2 animate-fade-in mb-4">
-                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="nama@perusahaan.com"
-                  required
-                  autoComplete="email"
-                  disabled={submitting}
-                  className="h-11 rounded-xl"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="password" className="block text-sm font-medium text-slate-700">
-                    Password
-                  </label>
-                  <Link
-                    href="/forgot-password"
-                    className="text-xs font-medium text-teal-600 hover:text-teal-700"
-                  >
-                    Lupa password?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                    autoComplete="current-password"
-                    disabled={submitting}
-                    className="h-11 rounded-xl pr-12"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600 transition-colors p-1"
-                    tabIndex={-1}
-                    aria-label={showPassword ? "Sembunyikan" : "Tampilkan"}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                size="lg"
-                disabled={submitting}
-                className="w-full h-11 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-600/30 font-semibold"
-              >
-                {submitting ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                    Memproses...
-                  </span>
-                ) : (
-                  "Masuk"
-                )}
-              </Button>
-            </form>
-
-            {/* Divider */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200" />
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="bg-white px-3 text-slate-500">atau</span>
-              </div>
-            </div>
-
-            {/* Register Link */}
-            <p className="text-center text-sm text-slate-600">
-              Belum punya akun?{" "}
-              <Link
-                href="/register"
-                className="font-semibold text-teal-600 hover:text-teal-700 transition-colors"
-              >
-                Daftar Sekarang
-              </Link>
-            </p>
-          </div>
-
-          {/* Footer */}
-          <p className="mt-6 text-center text-xs text-white/90 drop-shadow-md">
-            © 2026 All rights reserved.
+      <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            Selamat Datang Kembali
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Masuk ke akun TaskHub Anda
           </p>
         </div>
+
+        {error && (
+          <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2 animate-fade-in mb-4">
+            <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="nama@perusahaan.com"
+              required
+              autoComplete="email"
+              disabled={submitting}
+              className="h-11 rounded-xl"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                Password
+              </label>
+              <Link href="/forgot-password" className="text-xs font-medium text-teal-600 hover:text-teal-700">
+                Lupa password?
+              </Link>
+            </div>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                autoComplete="current-password"
+                disabled={submitting}
+                className="h-11 rounded-xl pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600 transition-colors p-1"
+                tabIndex={-1}
+                aria-label={showPassword ? "Sembunyikan" : "Tampilkan"}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            size="lg"
+            disabled={submitting}
+            className="w-full h-11 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-600/30 font-semibold"
+          >
+            {submitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                Memproses...
+              </span>
+            ) : (
+              "Masuk"
+            )}
+          </Button>
+        </form>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-slate-200" />
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-white px-3 text-slate-500">atau</span>
+          </div>
+        </div>
+
+        <p className="text-center text-sm text-slate-600">
+          Belum punya akun?{" "}
+          <Link href="/register" className="font-semibold text-teal-600 hover:text-teal-700 transition-colors">
+            Daftar Sekarang
+          </Link>
+        </p>
       </div>
-    </>
+
+      <p className="mt-6 text-center text-xs text-white/90 drop-shadow-md">
+        © 2026 All rights reserved.
+      </p>
+    </AuthLayout>
   );
 }
