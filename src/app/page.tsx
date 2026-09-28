@@ -46,7 +46,7 @@ export default function HomePage() {
 
         {/* Tagline */}
         <p className="text-sm text-slate-600 max-w-xs mx-auto leading-relaxed">
-          Track requests, manage documents, dan kolaborasi tim.
+          Track requests and Manage documents
         </p>
 
         {/* Buttons (tanpa card wrapper, langsung di container) */}
