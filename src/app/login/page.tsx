@@ -59,19 +59,26 @@ export default function LoginPage() {
       <BackgroundIllustration />
 
       {/* Form floated di sisi kanan (desktop) atau center (mobile) */}
-      <div className="relative min-h-screen flex items-center justify-center lg:justify-end px-4 py-8 lg:py-12 lg:pr-8 xl:pr-16">
-        <div className="w-full max-w-md">
-          {/* Logo Header (pakai /logo.png) */}
-          <div className="mb-6 flex justify-center">
+      <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
+        {/* Header dengan logo kecil */}
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-3 inline-flex items-center justify-center">
             <Image
               src="/logo.png"
               alt="TaskHub Logo"
-              width={64}
-              height={64}
-              className="object-contain drop-shadow-2xl"
+              width={44}
+              height={44}
+              className="object-contain"
               priority
             />
           </div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            Selamat Datang Kembali
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Masuk ke akun TaskHub Anda
+          </p>
+        </div>
 
           {/* Card glass effect */}
           <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
