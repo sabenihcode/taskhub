@@ -7,7 +7,7 @@ interface BackgroundIllustrationProps {
 
 export function BackgroundIllustration({
   className = "",
-  src = "/images/login-bg.png",
+  src = "/login-bg.png",
 }: BackgroundIllustrationProps) {
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`}>
