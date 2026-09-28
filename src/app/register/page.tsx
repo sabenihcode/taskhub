@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { doc, getDoc } from "firebase/firestore";
+import { AuthLayout } from "@/components/auth/AuthLayout";
 import { db } from "@/lib/firebase/config";
 
 export default function RegisterPage() {
@@ -23,7 +24,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Password strength calculator
   const passwordStrength = (() => {
     if (!password) return { strength: 0, label: "", color: "" };
 
@@ -42,40 +42,32 @@ export default function RegisterPage() {
       { label: "Cukup", color: "bg-yellow-500" },
       { label: "Kuat", color: "bg-lime-500" },
       { label: "Sangat Kuat", color: "bg-green-500" },
-      { label: "Sangat Kuat", color: "bg-green-600" },
     ];
 
-    return { strength, ...levels[Math.min(strength, 6)] };
+    return { strength, ...levels[Math.min(strength, 5)] };
   })();
 
-  // Redirect if already logged in
   useEffect(() => {
-    if (!loading && user) {
-      router.replace("/dashboard");
-    }
+    if (!loading && user) router.replace("/dashboard");
   }, [loading, user, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
-    // Client-side validation
     const trimmedName = name.trim();
     if (trimmedName.length < 3) {
       setError("Nama minimal 3 karakter");
       return;
     }
-
     if (password.length < 6) {
       setError("Password minimal 6 karakter");
       return;
     }
-
     if (password !== confirmPassword) {
       setError("Password tidak cocok");
       return;
     }
-
     if (!agreeTerms) {
       setError("Anda harus menyetujui syarat dan ketentuan");
       return;
@@ -92,27 +84,23 @@ export default function RegisterPage() {
       if (result.error) {
         setError(result.error);
       } else {
-        // Wait for Firestore to save user data
         setTimeout(async () => {
           try {
-            const userDoc = await getDoc(doc(db!, "users", result.uid!));
-            const userData = userDoc.data();
-            const userRole = userData?.role || "user";
-
+            const userDoc = await getDoc(doc(db, "users", result.uid!));
+            const _ = userDoc.data(); // role check (silenced unused warning)
             router.replace("/dashboard");
-          } catch (err) {
+          } catch {
             router.replace("/dashboard");
           }
         }, 500);
       }
-    } catch (err: any) {
+    } catch {
       setError("Terjadi kesalahan, silakan coba lagi");
     } finally {
       setSubmitting(false);
     }
   }
 
-  // Show loading while checking auth
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-50 via-white to-slate-50">
@@ -121,32 +109,24 @@ export default function RegisterPage() {
     );
   }
 
-  // If already logged in
-  if (user) {
-    return null;
-  }
+  if (user) return null;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-50 via-white to-slate-50 px-6 py-12">
-      {/* Background Decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-teal-100/30 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-100/30 blur-3xl" />
+    <AuthLayout>
+      {/* Logo kecil di atas card */}
+      <div className="mb-4 flex justify-center">
+        <Image
+          src="/logo.png"
+          alt="TaskHub Logo"
+          width={56}
+          height={56}
+          className="object-contain drop-shadow-2xl"
+          priority
+        />
       </div>
 
-      <div className="relative w-full max-w-md">
-        {/* Logo Header */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex items-center justify-center">
-            <Image 
-              src="/logo.png" 
-              alt="TaskHub Logo" 
-              width={80}
-              height={80}
-              className="object-contain drop-shadow-xl"
-              priority
-            />
-          </div>
+      <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
+        <div className="mb-6 text-center">
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
             Buat Akun Baru
           </h1>
@@ -155,243 +135,195 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        {/* Card */}
-        <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-slate-200/50 p-8 shadow-xl shadow-slate-200/50">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Error Alert */}
-            {error && (
-              <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 animate-fade-in">
-                <div className="flex items-start gap-2">
-                  <span className="font-semibold">⚠</span>
-                  <span>{error}</span>
+        {error && (
+          <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2 animate-fade-in mb-4">
+            <span className="font-semibold">⚠</span>
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-slate-700">
+              Nama Lengkap
+            </label>
+            <Input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Andi Wijaya"
+              required
+              minLength={3}
+              autoComplete="name"
+              disabled={submitting}
+              className="h-11 rounded-xl"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="nama@perusahaan.com"
+              required
+              autoComplete="email"
+              disabled={submitting}
+              className="h-11 rounded-xl"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-slate-700">
+              Password
+            </label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Minimal 6 karakter"
+                required
+                minLength={6}
+                autoComplete="new-password"
+                disabled={submitting}
+                className="h-11 rounded-xl pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600 transition-colors p-1"
+                tabIndex={-1}
+              >
+                {showPassword ? "HIDE" : "SHOW"}
+              </button>
+            </div>
+
+            {password && (
+              <div className="mt-2 space-y-1.5 animate-fade-in">
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((level) => (
+                    <div
+                      key={level}
+                      className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                        level <= passwordStrength.strength
+                          ? passwordStrength.color
+                          : "bg-slate-200"
+                      }`}
+                    />
+                  ))}
                 </div>
+                {passwordStrength.label && (
+                  <p className="text-xs text-slate-600">
+                    Kekuatan:{" "}
+                    <span
+                      className={`font-semibold ${
+                        passwordStrength.strength >= 4
+                          ? "text-green-600"
+                          : passwordStrength.strength >= 3
+                          ? "text-yellow-600"
+                          : "text-orange-600"
+                      }`}
+                    >
+                      {passwordStrength.label}
+                    </span>
+                  </p>
+                )}
               </div>
             )}
+          </div>
 
-            {/* Name Field */}
-            <div>
-              <label
-                htmlFor="name"
-                className="mb-1.5 block text-sm font-medium text-slate-700"
-              >
-                Nama Lengkap
-              </label>
+          <div>
+            <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-medium text-slate-700">
+              Konfirmasi Password
+            </label>
+            <div className="relative">
               <Input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Andi Wijaya"
+                id="confirmPassword"
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Masukkan ulang password"
                 required
-                minLength={3}
-                autoComplete="name"
+                autoComplete="new-password"
                 disabled={submitting}
-                className="h-11 rounded-xl"
+                className="h-11 rounded-xl pr-24"
               />
-            </div>
-
-            {/* Email Field */}
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-slate-700"
-              >
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="nama@perusahaan.com"
-                required
-                autoComplete="email"
-                disabled={submitting}
-                className="h-11 rounded-xl"
-              />
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-slate-700"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Minimal 6 karakter"
-                  required
-                  minLength={6}
-                  autoComplete="new-password"
-                  disabled={submitting}
-                  className="h-11 rounded-xl pr-12"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-teal-600 transition-colors px-2 py-1"
-                  tabIndex={-1}
-                >
-                  {showPassword ? "HIDE" : "SHOW"}
-                </button>
-              </div>
-
-              {/* Password Strength Indicator */}
-              {password && (
-                <div className="mt-2 space-y-1.5 animate-fade-in">
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((level) => (
-                      <div
-                        key={level}
-                        className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                          level <= passwordStrength.strength
-                            ? passwordStrength.color
-                            : "bg-slate-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  {passwordStrength.label && (
-                    <p className="text-xs text-slate-600">
-                      Kekuatan:{" "}
-                      <span
-                        className={`font-semibold ${
-                          passwordStrength.strength >= 4
-                            ? "text-green-600"
-                            : passwordStrength.strength >= 3
-                            ? "text-yellow-600"
-                            : "text-orange-600"
-                        }`}
-                      >
-                        {passwordStrength.label}
-                      </span>
-                    </p>
+              {confirmPassword && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  {password === confirmPassword ? (
+                    <span className="text-xs font-semibold text-green-600">✓ Cocok</span>
+                  ) : (
+                    <span className="text-xs font-semibold text-red-600">✗ Tidak cocok</span>
                   )}
                 </div>
               )}
             </div>
-
-            {/* Confirm Password Field */}
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="mb-1.5 block text-sm font-medium text-slate-700"
-              >
-                Konfirmasi Password
-              </label>
-              <div className="relative">
-                <Input
-                  id="confirmPassword"
-                  type={showPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Masukkan ulang password"
-                  required
-                  autoComplete="new-password"
-                  disabled={submitting}
-                  className="h-11 rounded-xl pr-20"
-                />
-                {/* Match indicator */}
-                {confirmPassword && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    {password === confirmPassword ? (
-                      <span className="text-xs font-semibold text-green-600">
-                        ✓ Cocok
-                      </span>
-                    ) : (
-                      <span className="text-xs font-semibold text-red-600">
-                        ✗ Tidak cocok
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Terms & Conditions */}
-            <div className="flex items-start gap-3 rounded-xl bg-slate-50/70 p-4 border border-slate-100">
-              <input
-                type="checkbox"
-                id="terms"
-                checked={agreeTerms}
-                onChange={(e) => setAgreeTerms(e.target.checked)}
-                disabled={submitting}
-                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500/20 disabled:opacity-50 cursor-pointer"
-              />
-              <label
-                htmlFor="terms"
-                className="text-sm text-slate-600 cursor-pointer select-none"
-              >
-                Saya menyetujui{" "}
-                <Link
-                  href="/terms"
-                  target="_blank"
-                  className="font-semibold text-teal-600 hover:text-teal-700 underline-offset-2 hover:underline"
-                >
-                  Syarat & Ketentuan
-                </Link>
-                {" "}dan{" "}
-                <Link
-                  href="/privacy"
-                  target="_blank"
-                  className="font-semibold text-teal-600 hover:text-teal-700 underline-offset-2 hover:underline"
-                >
-                  Kebijakan Privasi
-                </Link>
-              </label>
-            </div>
-
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              size="lg"
-              disabled={submitting || !agreeTerms}
-              className="w-full h-11 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-600/30 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {submitting ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Membuat Akun...
-                </span>
-              ) : (
-                "Daftar Sekarang"
-              )}
-            </Button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-3 text-slate-500">atau</span>
-            </div>
           </div>
 
-          {/* Login Link */}
-          <p className="text-center text-sm text-slate-600">
-            Sudah punya akun?{" "}
-            <Link
-              href="/login"
-              className="font-semibold text-teal-600 hover:text-teal-700 transition-colors"
-            >
-              Masuk di sini
-            </Link>
-          </p>
+          <div className="flex items-start gap-3 rounded-xl bg-slate-50/70 p-4 border border-slate-100">
+            <input
+              type="checkbox"
+              id="terms"
+              checked={agreeTerms}
+              onChange={(e) => setAgreeTerms(e.target.checked)}
+              disabled={submitting}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500/20 disabled:opacity-50 cursor-pointer"
+            />
+            <label htmlFor="terms" className="text-sm text-slate-600 cursor-pointer select-none">
+              Saya menyetujui{" "}
+              <Link href="/terms" target="_blank" className="font-semibold text-teal-600 hover:text-teal-700 underline-offset-2 hover:underline">
+                Syarat & Ketentuan
+              </Link>{" "}dan{" "}
+              <Link href="/privacy" target="_blank" className="font-semibold text-teal-600 hover:text-teal-700 underline-offset-2 hover:underline">
+                Kebijakan Privasi
+              </Link>
+            </label>
+          </div>
+
+          <Button
+            type="submit"
+            size="lg"
+            disabled={submitting || !agreeTerms}
+            className="w-full h-11 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-600/30 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+          >
+            {submitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                Membuat Akun...
+              </span>
+            ) : (
+              "Daftar Sekarang"
+            )}
+          </Button>
+        </form>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-slate-200" />
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-white px-3 text-slate-500">atau</span>
+          </div>
         </div>
 
-        {/* Footer */}
-        <p className="mt-6 text-center text-xs text-slate-400">
-          © 2026 All rights reserved.
+        <p className="text-center text-sm text-slate-600">
+          Sudah punya akun?{" "}
+          <Link href="/login" className="font-semibold text-teal-600 hover:text-teal-700 transition-colors">
+            Masuk di sini
+          </Link>
         </p>
       </div>
-    </div>
+
+      <p className="mt-6 text-center text-xs text-white/90 drop-shadow-md">
+        © 2026 All rights reserved.
+      </p>
+    </AuthLayout>
   );
 }
