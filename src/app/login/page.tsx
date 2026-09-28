@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { BackgroundIllustration } from "@/components/BackgroundIllustration";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,14 +44,13 @@ export default function LoginPage() {
       } else {
         router.replace("/dashboard");
       }
-    } catch (err: any) {
+    } catch (err) {
       setError("Terjadi kesalahan, silakan coba lagi");
     } finally {
       setSubmitting(false);
     }
   }
 
-  // Show loading spinner while checking auth
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-50 via-white to-slate-50">
@@ -59,59 +59,44 @@ export default function LoginPage() {
     );
   }
 
-  // If already logged in, don't show login form
-  if (user) {
-    return null;
-  }
+  if (user) return null;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-50 via-white to-slate-50 px-6 py-12">
-      {/* Background Decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-teal-100/30 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-100/30 blur-3xl" />
-      </div>
+    <div className="relative min-h-screen flex items-center justify-center px-6 py-12">
+      {/* Background Gambar */}
+      <BackgroundIllustration />
 
       <div className="relative w-full max-w-md">
-        {/* Logo Header */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex items-center justify-center">
-            <Image 
-              src="/logo.png" 
-              alt="TaskHub Logo" 
-              width={80}
-              height={80}
-              className="object-contain drop-shadow-xl"
-              priority
-            />
+        {/* Card dengan glass effect */}
+        <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
+          {/* Logo Header */}
+          <div className="mb-6 text-center">
+            <div className="mx-auto mb-4 flex items-center justify-center">
+              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 text-3xl font-black text-white shadow-xl shadow-teal-600/40">
+                T
+              </div>
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Selamat Datang Kembali
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">
+              Masuk ke akun TaskHub Anda
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Selamat Datang Kembali
-          </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Masuk ke akun TaskHub Anda
-          </p>
-        </div>
 
-        {/* Card */}
-        <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-slate-200/50 p-8 shadow-xl shadow-slate-200/50">
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Error Alert */}
             {error && (
-              <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 animate-fade-in">
-                <div className="flex items-start gap-2">
-                  <span className="font-semibold">⚠</span>
-                  <span>{error}</span>
-                </div>
+              <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2 animate-fade-in">
+                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                <span>{error}</span>
               </div>
             )}
 
             {/* Email Field */}
             <div>
-              <label
-                htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-slate-700"
-              >
+              <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">
                 Email
               </label>
               <Input
@@ -130,16 +115,10 @@ export default function LoginPage() {
             {/* Password Field */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-slate-700"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                   Password
                 </label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs font-medium text-teal-600 hover:text-teal-700"
-                >
+                <Link href="/forgot-password" className="text-xs font-medium text-teal-600 hover:text-teal-700">
                   Lupa password?
                 </Link>
               </div>
@@ -158,10 +137,11 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-teal-600 transition-colors px-2 py-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600 transition-colors p-1"
                   tabIndex={-1}
+                  aria-label={showPassword ? "Sembunyikan" : "Tampilkan"}
                 >
-                  {showPassword ? "HIDE" : "SHOW"}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -171,7 +151,7 @@ export default function LoginPage() {
               type="submit"
               size="lg"
               disabled={submitting}
-              className="w-full h-11 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-600/30"
+              className="w-full h-11 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-600/30 font-semibold"
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -190,29 +170,24 @@ export default function LoginPage() {
               <div className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-3 text-slate-500">
-                atau
-              </span>
+              <span className="bg-white px-3 text-slate-500">atau</span>
             </div>
           </div>
 
           {/* Register Link */}
           <p className="text-center text-sm text-slate-600">
             Belum punya akun?{" "}
-            <Link
-              href="/register"
-              className="font-semibold text-teal-600 hover:text-teal-700 transition-colors"
-            >
+            <Link href="/register" className="font-semibold text-teal-600 hover:text-teal-700 transition-colors">
               Daftar Sekarang
             </Link>
           </p>
         </div>
 
         {/* Footer */}
-        <p className="mt-6 text-center text-xs text-slate-400">
+        <p className="mt-6 text-center text-xs text-white/90 drop-shadow-md">
           © 2026 All rights reserved.
         </p>
       </div>
     </div>
   );
-  }
+}
