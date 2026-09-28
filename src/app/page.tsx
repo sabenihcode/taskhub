@@ -13,86 +13,68 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main
-      className={`relative min-h-screen flex items-center justify-center px-6 py-12 transition-all duration-1000 ${
+    <div
+      className={`relative min-h-screen flex items-center justify-center lg:justify-end px-6 py-12 lg:pr-8 xl:pr-16 transition-all duration-1000 ${
         mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
       }`}
     >
-      <div className="w-full max-w-md">
-        {/* Logo Header */}
-        <div className="mb-6 flex justify-center">
-          <Image
-            src="/logo.png"
-            alt="TaskHub Logo"
-            width={72}
-            height={72}
-            className="object-contain drop-shadow-2xl"
-            priority
-          />
+      <div className="w-full max-w-md text-center space-y-5">
+        {/* Logo */}
+        <div className="flex justify-center mb-3">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full blur-2xl opacity-30 group-hover:opacity-40 transition-opacity" />
+            <Image
+              src="/logo.png"
+              alt="TaskHub Logo"
+              width={96}
+              height={96}
+              className="relative object-contain drop-shadow-2xl transform group-hover:scale-105 transition-transform duration-500"
+              priority
+            />
+          </div>
         </div>
 
-        {/* Hero Card */}
-        <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 bg-clip-text text-transparent leading-tight tracking-tight">
-              TaskHub
-            </h1>
-            <p className="mt-2 text-base sm:text-lg text-slate-600 font-medium">
-              Immigration Task Management
-            </p>
-          </div>
-
-          <p className="text-sm text-slate-500 text-center mb-8 leading-relaxed">
-            Track requests, manage documents, dan kolaborasi dengan tim Anda dalam satu platform.
+        {/* Brand Name */}
+        <div className="space-y-1.5">
+          <h1 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 bg-clip-text text-transparent leading-tight tracking-tight">
+            TaskHub
+          </h1>
+          <p className="text-sm sm:text-base text-slate-700 font-medium">
+            Immigration Task Management
           </p>
+        </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col gap-3">
-            <Link href="/register" className="w-full">
-              <Button
-                size="lg"
-                className="w-full h-12 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-600/30 font-semibold text-base"
-              >
-                Get Started
-              </Button>
-            </Link>
-            <Link href="/login" className="w-full">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full h-12 rounded-xl bg-white text-teal-700 border-teal-200 hover:bg-teal-50 hover:border-teal-300 font-semibold text-base"
-              >
-                Sign In
-              </Button>
-            </Link>
-          </div>
+        {/* Tagline */}
+        <p className="text-sm text-slate-600 max-w-xs mx-auto leading-relaxed">
+          Track requests, manage documents, dan kolaborasi tim.
+        </p>
 
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-3 text-slate-500">atau</span>
-            </div>
-          </div>
-
-          {/* Secondary info */}
-          <div className="space-y-3 text-center">
-            <p className="text-xs text-slate-500">
-              Gratis untuk 14 hari pertama
-            </p>
-            <p className="text-xs text-slate-500">
-              Data aman dengan Firebase
-            </p>
-          </div>
+        {/* Buttons (tanpa card wrapper, langsung di container) */}
+        <div className="flex flex-col gap-3 pt-3 max-w-xs mx-auto">
+          <Link href="/register" className="w-full">
+            <Button
+              size="lg"
+              className="w-full h-12 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-600/30 font-semibold"
+            >
+              Get Started
+            </Button>
+          </Link>
+          <Link href="/login" className="w-full">
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full h-12 rounded-xl bg-white/95 backdrop-blur-sm text-teal-700 border-teal-200 hover:bg-teal-50 hover:border-teal-300 font-semibold"
+            >
+              Sign In
+            </Button>
+          </Link>
         </div>
 
         {/* Footer */}
-        <p className="mt-6 text-center text-xs text-slate-900/80 drop-shadow-md font-medium">
+        <p className="text-xs text-slate-500 pt-6">
           © 2026 TaskHub. All rights reserved.
         </p>
       </div>
-    </main>
+    </div>
   );
 }
