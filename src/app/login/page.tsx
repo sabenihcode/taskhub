@@ -59,26 +59,26 @@ export default function LoginPage() {
       <BackgroundIllustration />
 
       {/* Form floated di sisi kanan (desktop) atau center (mobile) */}
-      <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
-        {/* Header dengan logo kecil */}
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 inline-flex items-center justify-center">
-            <Image
-              src="/logo.png"
-              alt="TaskHub Logo"
-              width={44}
-              height={44}
-              className="object-contain"
-              priority
-            />
+        <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
+          {/* Header dengan logo kecil */}
+          <div className="mb-6 text-center">
+            <div className="mx-auto mb-3 inline-flex items-center justify-center">
+              <Image
+                src="/logo.png"
+                alt="TaskHub Logo"
+                width={44}
+                height={44}
+                className="object-contain"
+                priority
+              />
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Selamat Datang Kembali
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">
+              Masuk ke akun TaskHub Anda
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Selamat Datang Kembali
-          </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Masuk ke akun TaskHub Anda
-          </p>
-        </div>
 
           {/* Card glass effect */}
           <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-white/40 p-8 shadow-2xl shadow-slate-900/30">
