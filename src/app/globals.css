@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+}
+
+body {
+  font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.mono-border {
+  border: 1px solid #000000;
+}
+.mono-border-b {
+  border-bottom: 1px solid #000000;
+}
+.mono-border-t {
+  border-top: 1px solid #000000;
+}
+.mono-border-r {
+  border-right: 1px solid #000000;
+}
+.mono-border-l {
+  border-left: 1px solid #000000;
+}
+
+button {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+select,
+input,
+textarea {
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 0px;
+}
+select:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid #000000;
+}
