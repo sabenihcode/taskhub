@@ -90,7 +90,7 @@ export function RequestForm() {
     teams.find((t) => t.id === teamIdValue)?.name ?? "No Team";
 
   // ============================================================
-  // SUBMIT
+  // SUBMIT HANDLER
   // ============================================================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,15 +119,25 @@ export function RequestForm() {
 
     setSubmitting(true);
     try {
+      // ✅ FIX 1: Bersihkan Subject Email (Kapitalisasi huruf pertama saja)
+      const cleanSubject = subjectEmail.trim().charAt(0).toUpperCase() + 
+                           subjectEmail.trim().slice(1).toLowerCase();
+      
+      // ✅ FIX 2: Title pintar (hindari redundansi)
+      const typeName = selectedType?.name ?? "Request";
+      const title = cleanSubject.toLowerCase().includes(typeName.toLowerCase())
+        ? cleanSubject // Jika subject sudah contain type name, jangan ulang
+        : `${typeName} - ${cleanSubject}`;
+
       await addRequest({
-        title: `${selectedType?.name ?? "Request"} - ${subjectEmail.trim()}`,
+        title, // ✅ Gunakan title yang sudah bersih
         status: "New",
         priority,
         companyId,
         teamId,
         requestTypeId: typeId,
         picId: defaultPicEmail,
-        subjectEmail: subjectEmail.trim(),
+        subjectEmail: cleanSubject, // ✅ Gunakan subject yang sudah bersih
         detailEmail: detailEmail.trim() || null,
         picEmailUserId: defaultPicEmail,
         dueDate,
