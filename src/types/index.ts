@@ -26,6 +26,7 @@ export type WaitingFor =
   | "HR"
   | "Finance"
   | "Internal Team"
+  | "Instansi Kemenaker"
   | "Immigration"
   | "Manpower"
   | "Other";
