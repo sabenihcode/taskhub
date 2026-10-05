@@ -186,6 +186,7 @@ export const WAITING_FOR_OPTIONS: WaitingFor[] = [
   "HR",
   "Finance",
   "Internal Team",
+  "Instansi Kemenaker",
   "Immigration",
   "Manpower",
   "Other",
