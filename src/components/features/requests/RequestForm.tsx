@@ -141,8 +141,8 @@ export function RequestForm() {
         detailEmail: detailEmail.trim() || null,
         picEmailUserId: defaultPicEmail,
         dueDate,
-        currentAction: "New request registered into system",
-        nextAction: "Review applicant documents",
+        currentAction: "New request registered",
+        nextAction: "Review documents",
         waitingFor: "Internal Team",
         documents: [],
       });
@@ -230,7 +230,7 @@ export function RequestForm() {
           ============================================ */}
       <div className="space-y-4">
         <h3 className="text-xs font-bold uppercase tracking-wider bg-black text-white p-2">
-          2. Applicant Information
+          2. Document Information
         </h3>
 
         <div className="space-y-3 pb-3">
