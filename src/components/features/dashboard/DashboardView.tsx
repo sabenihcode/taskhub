@@ -1,4 +1,3 @@
-// src/components/features/dashboard/DashboardView.tsx
 "use client";
 
 import Link from "next/link";
@@ -250,14 +249,14 @@ export function DashboardView() {
           <table className="w-full text-left text-xs">
             <thead className="bg-black text-white uppercase font-bold">
               <tr>
-                <th className="p-3">Request ID</th>
-                <th className="p-3">Company</th>
-                <th className="p-3">Subject</th>
-                <th className="p-3">Type</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">PIC</th>
-                <th className="p-3">Indicator</th>
-                <th className="p-3 text-right">Action</th>
+                <th className="p-3 whitespace-nowrap">Request ID</th>
+                <th className="p-3 whitespace-nowrap">Company</th>
+                <th className="p-3 min-w-[280px]">Subject</th>
+                <th className="p-3 whitespace-nowrap">Type</th>
+                <th className="p-3 whitespace-nowrap">Status</th>
+                <th className="p-3 whitespace-nowrap">PIC</th>
+                <th className="p-3 whitespace-nowrap">Indicator</th>
+                <th className="p-3 text-right whitespace-nowrap">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -269,18 +268,18 @@ export function DashboardView() {
                 </tr>
               )}
               {filteredRequests.map((req) => (
-                <tr key={req.id} className="mono-border-t hover:bg-gray-50">
-                  <td className="p-3 font-mono font-bold">{req.requestId ?? req.id}</td>
-                  <td className="p-3 font-semibold">{companyName(req.companyId)}</td>
-                  <td className="p-3">{req.subjectEmail ?? req.applicantName ?? "-"}</td>
-                  <td className="p-3">{typeName(req.requestTypeId)}</td>
-                  <td className="p-3 font-bold">{req.status}</td>
-                  <td className="p-3">{picName(req.picId)}</td>
-                  <td className="p-3"><RequestIndicators request={req} /></td>
-                  <td className="p-3 text-right">
+                <tr key={req.id} className="mono-border-t hover:bg-gray-50 align-top">
+                  <td className="p-3 font-mono font-bold whitespace-nowrap">{req.requestId ?? req.id}</td>
+                  <td className="p-3 font-semibold whitespace-nowrap">{companyName(req.companyId)}</td>
+                  <td className="p-3 leading-relaxed">{req.subjectEmail ?? req.applicantName ?? "-"}</td>
+                  <td className="p-3 whitespace-nowrap">{typeName(req.requestTypeId)}</td>
+                  <td className="p-3 font-bold whitespace-nowrap">{req.status}</td>
+                  <td className="p-3 whitespace-nowrap">{picName(req.picId)}</td>
+                  <td className="p-3 whitespace-nowrap"><RequestIndicators request={req} /></td>
+                  <td className="p-3 text-right whitespace-nowrap">
                     <Link
                       href={`/database/${req.id}`}
-                      className="mono-border px-2 py-1 text-[11px] uppercase font-bold hover:bg-black hover:text-white"
+                      className="inline-block mono-border px-2.5 py-1 text-[11px] uppercase font-bold whitespace-nowrap transition-colors hover:bg-black hover:text-white"
                     >
                       Open Detail
                     </Link>
