@@ -340,6 +340,11 @@ function toFirestoreRequest(data: Partial<Request>): DocumentData {
     if (key in payload) payload[key] = toTimestamp(payload[key] as string | null);
   }
 
+  // ✅ Normalisasi: string kosong -> null, supaya lolos rule & konsisten
+  if ("waitingFor" in payload && payload.waitingFor === "") {
+    payload.waitingFor = null;
+  }
+
   return stripUndefined(payload);
 }
 
